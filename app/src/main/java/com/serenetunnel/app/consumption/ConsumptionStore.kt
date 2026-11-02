@@ -11,7 +11,7 @@ import java.util.UUID
 
 /** Local counters, never used as entitlement and never sent to the VPS. */
 object ConsumptionStore {
-    private class Database(context: Context) : SQLiteOpenHelper(context,"barka_consumption.db",null,1) {
+    private class Database(context: Context) : SQLiteOpenHelper(context,"serene_consumption.db",null,1) {
         override fun onCreate(db: SQLiteDatabase) {
             db.execSQL("CREATE TABLE daily(origin TEXT NOT NULL,day TEXT NOT NULL,up INTEGER NOT NULL,down INTEGER NOT NULL,PRIMARY KEY(origin,day))")
             db.execSQL("CREATE TABLE meta(key TEXT PRIMARY KEY,value TEXT NOT NULL)")
@@ -62,11 +62,11 @@ object ConsumptionStore {
         db(context).rawQuery("SELECT origin,day,up,down FROM daily ORDER BY origin,day",null).use {
             while(it.moveToNext())rows.put(JSONObject().put("origin",it.getString(0)).put("day",it.getString(1)).put("up",it.getLong(2)).put("down",it.getLong(3)))
         }
-        return JSONObject().put("format","barka-consumption-1").put("days",rows).toString()
+        return JSONObject().put("format","serene-consumption-1").put("days",rows).toString()
     }
     @Synchronized fun restore(context: Context,text: String) {
         require(text.length<=4_000_000)
-        val root=JSONObject(text);require(root.getString("format")=="barka-consumption-1")
+        val root=JSONObject(text);require(root.getString("format")=="serene-consumption-1")
         val rows=root.getJSONArray("days");require(rows.length()<=20000)
         val db=db(context);db.beginTransaction()
         try {
