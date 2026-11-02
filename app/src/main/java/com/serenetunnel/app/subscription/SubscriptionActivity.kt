@@ -16,7 +16,7 @@ import com.serenetunnel.app.pricing.PricingStore
 import com.serenetunnel.app.pricing.PricingLabels
 import com.serenetunnel.app.pricing.PricingSync
 import com.serenetunnel.app.R
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.journal.AppLogStore
 import com.serenetunnel.app.ui.SystemBars
 import com.google.android.material.button.MaterialButton
@@ -107,7 +107,7 @@ class SubscriptionActivity : AppCompatActivity() {
 
         Thread {
             try {
-                val payment = BarkaBackendClient(this).startPayment(purchasePlanId, purchaseAmount)
+                val payment = SereneBackendClient(this).startPayment(purchasePlanId, purchaseAmount)
                 val saved = PendingPaymentStore.save(
                     context = this,
                     reference = payment.paymentReference,
@@ -164,7 +164,7 @@ class SubscriptionActivity : AppCompatActivity() {
 
         Thread {
             try {
-                val status = BarkaBackendClient(this).checkPaymentStatus(reference)
+                val status = SereneBackendClient(this).checkPaymentStatus(reference)
                 runOnUiThread {
                     if (PendingPaymentStore.reference(this) != reference) return@runOnUiThread
                     when (status.status) {
@@ -218,7 +218,7 @@ class SubscriptionActivity : AppCompatActivity() {
         activatingPayment = true
         Thread {
             try {
-                val result = BarkaBackendClient(this).redeemActivationCode(code)
+                val result = SereneBackendClient(this).redeemActivationCode(code)
                 runOnUiThread {
                     activatingPayment = false
                     if (PendingPaymentStore.reference(this) != reference || isDestroyed) return@runOnUiThread
@@ -260,7 +260,7 @@ class SubscriptionActivity : AppCompatActivity() {
         confirmationDialog = PaymentConfirmationDialog.show(this, code, offer,
             onCopy = {
                 val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                clipboard.setPrimaryClip(ClipData.newPlainText("Code Barka Tunnel", code))
+                clipboard.setPrimaryClip(ClipData.newPlainText("Code Serene Tunnel", code))
                 PendingPaymentStore.clear(this)
                 syncPendingPlan()
                 Toast.makeText(this, R.string.code_copied, Toast.LENGTH_SHORT).show()

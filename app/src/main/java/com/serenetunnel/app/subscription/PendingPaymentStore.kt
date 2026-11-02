@@ -3,7 +3,7 @@ package com.serenetunnel.app.subscription
 import android.content.Context
 
 object PendingPaymentStore {
-    private const val PREFS = "barka_pending_payment"
+    private const val PREFS = "serene_pending_payment"
     private const val KEY_REFERENCE = "reference"
     private const val KEY_PLAN_ID = "plan_id"
     private const val KEY_CONFIRMED_CODE = "confirmed_code"
