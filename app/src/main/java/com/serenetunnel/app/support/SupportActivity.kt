@@ -23,7 +23,7 @@ class SupportActivity : AppCompatActivity() {
             it.isEnabled = false
             val button = it
             Thread {
-                val result = runCatching { com.serenetunnel.app.backend.BarkaBackendClient(this).supportUrl() }
+                val result = runCatching { com.serenetunnel.app.backend.SereneBackendClient(this).supportUrl() }
                 runOnUiThread {
                     if (isFinishing || isDestroyed) return@runOnUiThread
                     button.isEnabled = true
@@ -44,8 +44,8 @@ class SupportActivity : AppCompatActivity() {
     }
 
     private fun applySystemBars() {
-        window.statusBarColor = ContextCompat.getColor(this, R.color.barka_background)
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.barka_background)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.serene_background)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.serene_background)
         val nightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
         val lightIcons = nightMode != android.content.res.Configuration.UI_MODE_NIGHT_YES
         WindowCompat.getInsetsController(window, window.decorView)?.apply {
