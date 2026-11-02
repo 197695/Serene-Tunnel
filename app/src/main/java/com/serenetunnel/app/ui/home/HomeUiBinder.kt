@@ -36,7 +36,7 @@ class HomeUiBinder(
             accessRemainingTime.context.getString(R.string.access_unlimited)
         else ConnectionTimeFormatter.formatRemaining(seconds)
         accessRemainingTime.setTextColor(ContextCompat.getColor(accessRemainingTime.context,
-            if (seconds == ConnectionTimeFormatter.UNLIMITED_SECONDS) R.color.barka_unlimited else R.color.barka_text))
+            if (seconds == ConnectionTimeFormatter.UNLIMITED_SECONDS) R.color.serene_unlimited else R.color.serene_text))
     }
 
     fun showConnection(state: HomeConnectionState) {
@@ -45,7 +45,7 @@ class HomeUiBinder(
                 vpnStatus.setText(R.string.status_not_connected)
                 connectButton.setText(R.string.connect)
                 vpnStatus.setTextColor(
-                    ContextCompat.getColor(vpnStatus.context, R.color.barka_text)
+                    ContextCompat.getColor(vpnStatus.context, R.color.serene_text)
                 )
             }
 
@@ -53,7 +53,7 @@ class HomeUiBinder(
                 vpnStatus.setText(R.string.status_connecting)
                 connectButton.setText(R.string.disconnect)
                 vpnStatus.setTextColor(
-                    ContextCompat.getColor(vpnStatus.context, R.color.barka_blue)
+                    ContextCompat.getColor(vpnStatus.context, R.color.serene_blue)
                 )
             }
 
@@ -61,7 +61,7 @@ class HomeUiBinder(
                 vpnStatus.setText(R.string.status_disconnecting)
                 connectButton.setText(R.string.disconnect)
                 vpnStatus.setTextColor(
-                    ContextCompat.getColor(vpnStatus.context, R.color.barka_blue)
+                    ContextCompat.getColor(vpnStatus.context, R.color.serene_blue)
                 )
             }
 
@@ -69,7 +69,7 @@ class HomeUiBinder(
                 vpnStatus.setText(R.string.status_connected)
                 connectButton.setText(R.string.disconnect)
                 vpnStatus.setTextColor(
-                    ContextCompat.getColor(vpnStatus.context, R.color.barka_green)
+                    ContextCompat.getColor(vpnStatus.context, R.color.serene_green)
                 )
             }
 
@@ -77,7 +77,7 @@ class HomeUiBinder(
                 vpnStatus.setText(R.string.status_not_connected)
                 connectButton.setText(R.string.connect)
                 vpnStatus.setTextColor(
-                    ContextCompat.getColor(vpnStatus.context, R.color.barka_text)
+                    ContextCompat.getColor(vpnStatus.context, R.color.serene_text)
                 )
             }
         }

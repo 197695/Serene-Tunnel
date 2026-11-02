@@ -1,6 +1,6 @@
 package com.serenetunnel.app.ui.home
 
-import com.serenetunnel.app.backend.BarkaBackendException
+import com.serenetunnel.app.backend.SereneBackendException
 import com.serenetunnel.app.vpnc6.C6VpnController
 import com.serenetunnel.app.vpnc6.C6VpnResult
 import com.serenetunnel.app.vpnprofile.VpnProfileRepository
@@ -21,7 +21,7 @@ class HomeVpnCoordinator(
 
         val profile = try {
             profileRepository.loadForConnection(network.id)
-        } catch (e: BarkaBackendException) {
+        } catch (e: SereneBackendException) {
             return HomeVpnResult.Error(
                 e.message ?: "Profil VPN indisponible pour ${network.displayName}"
             )

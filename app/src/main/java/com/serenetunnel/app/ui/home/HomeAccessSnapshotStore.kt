@@ -3,7 +3,7 @@ package com.serenetunnel.app.ui.home
 import android.content.Context
 
 object HomeAccessSnapshotStore {
-    private const val PREFS = "barka_access_snapshot"
+    private const val PREFS = "serene_access_snapshot"
     private const val KEY_EXPIRY_MS = "expiry_ms"
     private const val KEY_ALLOWED = "allowed"
 
