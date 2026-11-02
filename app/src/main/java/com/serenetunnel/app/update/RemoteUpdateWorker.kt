@@ -24,7 +24,7 @@ import androidx.work.WorkerParameters
 import com.serenetunnel.app.BuildConfig
 import com.serenetunnel.app.MainActivity
 import com.serenetunnel.app.R
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.journal.AppLogStore
 import com.serenetunnel.app.vpnprofile.VpnProfileRepository
 import com.serenetunnel.app.vpnprofile.VpnProfileSyncResult
@@ -36,7 +36,7 @@ class RemoteUpdateWorker(
 ) : Worker(appContext, params) {
 
     override fun doWork(): Result {
-        val backend = BarkaBackendClient(applicationContext)
+        val backend = SereneBackendClient(applicationContext)
         val prefs = applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         return try {
@@ -146,7 +146,7 @@ class RemoteUpdateWorker(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification_barka)
+            .setSmallIcon(R.drawable.ic_notification_serene)
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
@@ -154,7 +154,7 @@ class RemoteUpdateWorker(
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
-            .setColor(ContextCompat.getColor(applicationContext, R.color.barka_blue))
+            .setColor(ContextCompat.getColor(applicationContext, R.color.serene_blue))
             .build()
 
         notificationManager.notify(id, notification)
@@ -176,10 +176,10 @@ class RemoteUpdateWorker(
     }
 
     companion object {
-        private const val PREFS_NAME = "barka_remote_update_notifications"
+        private const val PREFS_NAME = "serene_remote_update_notifications"
         private const val KEY_PROFILE_FINGERPRINT = "profile_fingerprint"
         private const val KEY_LAST_NOTIFIED_APK_REVISION = "last_notified_apk_revision"
-        private const val CHANNEL_ID = "barka_remote_updates"
+        private const val CHANNEL_ID = "serene_remote_updates"
         private const val NOTIFICATION_PROFILE_ID = 2201
         private const val NOTIFICATION_APK_ID = 2202
         private const val KEY_INSTALLED_VERSION = "installed_version_code"
@@ -203,8 +203,8 @@ class RemoteUpdateWorker(
 }
 
 object RemoteUpdateScheduler {
-    private const val PERIODIC_WORK_NAME = "barka_remote_update_watch"
-    private const val IMMEDIATE_WORK_NAME = "barka_remote_update_watch_now"
+    private const val PERIODIC_WORK_NAME = "serene_remote_update_watch"
+    private const val IMMEDIATE_WORK_NAME = "serene_remote_update_watch_now"
 
     fun schedule(context: Context) {
         NotificationManagerCompat.from(context).cancel(2201)

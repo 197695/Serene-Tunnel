@@ -7,13 +7,13 @@ import android.os.Build
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.serenetunnel.app.R
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.backend.BackendAppUpdate
 import com.serenetunnel.app.journal.AppLogStore
 
 class AppUpdateCoordinator(
     private val activity: AppCompatActivity,
-    private val backendClient: BarkaBackendClient = BarkaBackendClient(activity)
+    private val backendClient: SereneBackendClient = SereneBackendClient(activity)
 ) {
 
     @Volatile

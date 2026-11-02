@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.serenetunnel.app.R
 import com.serenetunnel.app.backend.BackendAppUpdate
-import com.serenetunnel.app.vpnc6.BarkaVpnService
+import com.serenetunnel.app.vpnc6.SereneVpnService
 import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
@@ -111,10 +111,10 @@ class HomeApkDownload(private val activity: AppCompatActivity, root: View) {
             try {
                 val builder = OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS)
                     .readTimeout(20, TimeUnit.SECONDS).followSslRedirects(false)
-                BarkaVpnService.connectedSocksPort()?.let {
+                SereneVpnService.connectedSocksPort()?.let {
                     builder.proxy(Proxy(Proxy.Type.SOCKS, InetSocketAddress("127.0.0.1", it)))
                 }
-                val apk = File(directory, "BarkaTunnel.apk")
+                val apk = File(directory, "SereneTunnel.apk")
                 var lastUi = 0L
                 val file = apk.takeIf { it.isFile } ?: ResumableApkDownload(builder.build())
                     .download(url, directory, { cancellation.get() }) { done, size ->
@@ -192,7 +192,7 @@ class HomeApkDownload(private val activity: AppCompatActivity, root: View) {
     }
 
     companion object {
-        private const val PREFS = "barka_apk_download"
+        private const val PREFS = "serene_apk_download"
         private val executor = Executors.newSingleThreadExecutor()
         private fun key(url: String, version: Long) = MessageDigest.getInstance("SHA-256")
             .digest("$url|$version".toByteArray()).joinToString("") { "%02x".format(it) }

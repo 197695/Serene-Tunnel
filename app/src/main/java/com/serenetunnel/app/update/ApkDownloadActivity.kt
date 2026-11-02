@@ -15,7 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.serenetunnel.app.backend.BackendAppUpdate
-import com.serenetunnel.app.vpnc6.BarkaVpnService
+import com.serenetunnel.app.vpnc6.SereneVpnService
 import okhttp3.OkHttpClient
 import java.io.File
 import java.net.InetSocketAddress
@@ -67,9 +67,9 @@ class ApkDownloadActivity : AppCompatActivity() {
                 val key=sha256((url+"|"+version).toByteArray())
                 val root=File(context.filesDir,"apk-updates/$key")
                 val builder=OkHttpClient.Builder().connectTimeout(20,TimeUnit.SECONDS).readTimeout(20,TimeUnit.SECONDS).followSslRedirects(false)
-                BarkaVpnService.connectedSocksPort()?.let { builder.proxy(Proxy(Proxy.Type.SOCKS,InetSocketAddress("127.0.0.1",it))) }
+                SereneVpnService.connectedSocksPort()?.let { builder.proxy(Proxy(Proxy.Type.SOCKS,InetSocketAddress("127.0.0.1",it))) }
                 var lastUi=0L
-                val apk=File(root,"BarkaTunnel.apk")
+                val apk=File(root,"SereneTunnel.apk")
                 val file=apk.takeIf{it.isFile} ?: ResumableApkDownload(builder.build()).download(url,root,{paused.get()}) {done,total ->
                     val now=System.currentTimeMillis()
                     if(now-lastUi>200||done==total){lastUi=now;runOnUiThread {if(!isDestroyed){bar.progress=(done*100/total).toInt();status.text="${done/1048576} / ${total/1048576} Mo • ${bar.progress}%"}}}
