@@ -15,7 +15,7 @@ import com.serenetunnel.app.pricing.PricingStore
 import com.serenetunnel.app.pricing.PricingLabels
 import com.serenetunnel.app.pricing.PricingSync
 import com.serenetunnel.app.R
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.ui.SystemBars
 import com.google.android.material.button.MaterialButton
 import org.json.JSONObject
@@ -111,7 +111,7 @@ class ResellerPurchaseActivity : AppCompatActivity() {
     }.getOrDefault(value.optString("expires_at"))
 
     private fun payload():JSONObject = JSONObject().put("owner_key",state.getString("owner_key"))
-    private fun api(action:String,data:JSONObject):JSONObject = BarkaBackendClient(this).resellerPurchase(action,data)
+    private fun api(action:String,data:JSONObject):JSONObject = SereneBackendClient(this).resellerPurchase(action,data)
     private fun request(action:()->JSONObject,done:(JSONObject)->Unit) {
         if(busy)return
         busy=true; updateControls()
