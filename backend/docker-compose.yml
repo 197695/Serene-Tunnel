@@ -1,5 +1,5 @@
 services:
-  barka-backend:
+  serene-backend:
     build:
       context: .
       network: host
