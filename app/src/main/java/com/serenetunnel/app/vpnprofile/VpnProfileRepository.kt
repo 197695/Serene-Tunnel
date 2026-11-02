@@ -3,8 +3,8 @@ package com.serenetunnel.app.vpnprofile
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.serenetunnel.app.backend.BarkaBackendClient
-import com.serenetunnel.app.backend.BarkaBackendException
+import com.serenetunnel.app.backend.SereneBackendClient
+import com.serenetunnel.app.backend.SereneBackendException
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
  * puis conservées dans un cache chiffré par Android Keystore pour les connexions hors ligne.
  */
 class VpnProfileRepository(
-    private val backendClient: BarkaBackendClient,
+    private val backendClient: SereneBackendClient,
     context: Context
 ) {
 
@@ -77,7 +77,7 @@ class VpnProfileRepository(
             }
 
             if (downloadedCount != enabledProfiles.size) {
-                throw BarkaBackendException(
+                throw SereneBackendException(
                     lastError?.message
                         ?: "Tous les profils de connexion n’ont pas pu être synchronisés."
                 )
@@ -100,7 +100,7 @@ class VpnProfileRepository(
 
     fun loadForConnection(networkId: String): VpnProfile {
         if (secureStore.isMaintenance(networkId)) {
-            throw BarkaBackendException("Réseau en maintenance. Réessaie plus tard.")
+            throw SereneBackendException("Réseau en maintenance. Réessaie plus tard.")
         }
 
         // Une synchronisation réussie a déjà validé et chiffré le profil.
@@ -124,7 +124,7 @@ class VpnProfileRepository(
                         // n'a pas réellement réussi.
                     }
                 }
-                throw BarkaBackendException(
+                throw SereneBackendException(
                     "Mise à jour obligatoire de la configuration. Connecte Internet pour synchroniser ce réseau."
                 )
             }
@@ -139,7 +139,7 @@ class VpnProfileRepository(
             if (hasValidatedInternet()) throw error
         }
 
-        throw BarkaBackendException(
+        throw SereneBackendException(
             "Connecte une première fois l’application à Internet pour synchroniser ce réseau."
         )
     }
@@ -196,15 +196,15 @@ class VpnProfileRepository(
     private fun fetchAndCache(networkId: String): VpnProfile {
         val remote = backendClient.getVpnProfile(networkId)
         if (remote.meta.networkId != networkId) {
-            throw BarkaBackendException(
+            throw SereneBackendException(
                 "Le profil reçu ne correspond pas au réseau sélectionné."
             )
         }
         val protocol = VpnProfileProtocol.fromServer(remote.meta.protocol)
-            ?: throw BarkaBackendException("Protocole VPN inconnu.")
+            ?: throw SereneBackendException("Protocole VPN inconnu.")
 
         if (!VpnProfilePolicy.validate(networkId, protocol)) {
-            throw BarkaBackendException("Configuration VPN incohérente pour ce réseau.")
+            throw SereneBackendException("Configuration VPN incohérente pour ce réseau.")
         }
 
         VpnProfileConfigParser.validate(protocol, remote.configJson)
@@ -250,9 +250,9 @@ class VpnProfileRepository(
     }
 
     companion object {
-        private const val INSTALL_STATE_PREFERENCES = "barka_vpn_install_state"
+        private const val INSTALL_STATE_PREFERENCES = "serene_vpn_install_state"
         private const val KEY_SUCCESSFUL_SYNC_INSTALL_ID = "successful_sync_install_id"
-        private const val INSTALL_MARKER_FILE = "barka_install_id"
+        private const val INSTALL_MARKER_FILE = "serene_install_id"
         private val SYNC_LOCK = Any()
         private val INSTALL_ID_LOCK = Any()
     }

@@ -151,10 +151,10 @@ class VpnProfileSecureStore(context: Context) {
         "required_version_$networkId"
 
     companion object {
-        private const val PREFERENCES_NAME = "barka_vpn_profiles_secure"
+        private const val PREFERENCES_NAME = "serene_vpn_profiles_secure"
         private const val KEY_PROFILE_PREFIX = "profile_"
         private const val KEY_LAST_SUCCESSFUL_SYNC = "last_successful_sync"
-        private const val KEY_ALIAS = "barka_vpn_profile_cache_key"
+        private const val KEY_ALIAS = "serene_vpn_profile_cache_key"
         private const val ANDROID_KEY_STORE = "AndroidKeyStore"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private const val GCM_TAG_LENGTH_BITS = 128

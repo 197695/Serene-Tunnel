@@ -1,6 +1,6 @@
 package com.serenetunnel.app.vpnprofile
 
-import com.serenetunnel.app.backend.BarkaBackendException
+import com.serenetunnel.app.backend.SereneBackendException
 import org.json.JSONObject
 import java.net.URI
 import java.net.URLDecoder
@@ -57,22 +57,22 @@ object VpnProfileConfigParser {
         val json = try {
             JSONObject(configJson)
         } catch (_: Exception) {
-            throw BarkaBackendException("Configuration VPN JSON invalide.")
+            throw SereneBackendException("Configuration VPN JSON invalide.")
         }
 
         if (json.length() == 0) {
-            throw BarkaBackendException("Configuration VPN vide.")
+            throw SereneBackendException("Configuration VPN vide.")
         }
 
         return when (protocol) {
             VpnProfileProtocol.SSH_TLS -> {
-                if (json.optBoolean("allow_insecure", false)) throw BarkaBackendException("Le certificat TLS doit être vérifié.")
+                if (json.optBoolean("allow_insecure", false)) throw SereneBackendException("Le certificat TLS doit être vérifié.")
                 if (!json.has("port")) json.put("port",443)
                 if (!json.has("udpgw_port")) json.put("udpgw_port",7300)
                 VpnProfileConfig.SshTls(requiredString(json,"host"),requiredPort(json,"port"),requiredString(json,"sni"),
                     requiredString(json,"username"),
                     json.optString("password").also {
-                        if (it.isBlank()) throw BarkaBackendException("Champ VPN manquant : password")
+                        if (it.isBlank()) throw SereneBackendException("Champ VPN manquant : password")
                     },
                     json.optString("udpgw_host","127.0.0.1").ifBlank { "127.0.0.1" },requiredPort(json,"udpgw_port"))
             }
@@ -108,20 +108,20 @@ object VpnProfileConfigParser {
 
         val uuid = requiredString(json, "uuid")
         if (!UUID_REGEX.matches(uuid)) {
-            throw BarkaBackendException("UUID VLESS invalide.")
+            throw SereneBackendException("UUID VLESS invalide.")
         }
 
         val network = requiredString(json, "network").lowercase()
         if (network != "ws") {
-            throw BarkaBackendException("Barka Tunnel attend VLESS WebSocket (ws).")
+            throw SereneBackendException("Serene Tunnel attend VLESS WebSocket (ws).")
         }
 
         val security = requiredString(json, "security").lowercase()
         if (security !in setOf("tls", "none")) {
-            throw BarkaBackendException("Sécurité VLESS invalide.")
+            throw SereneBackendException("Sécurité VLESS invalide.")
         }
         if (json.has("proxy_host") && security != "tls") {
-            throw BarkaBackendException("Le proxy GLOBAL MONDIAL exige TLS.")
+            throw SereneBackendException("Le proxy GLOBAL MONDIAL exige TLS.")
         }
 
         return VpnProfileConfig.Vless(
@@ -145,12 +145,12 @@ object VpnProfileConfigParser {
 
     private fun parseProxyHeaders(json: JSONObject): Map<String, String> {
         val headers = json.optJSONObject("proxy_headers") ?: return emptyMap()
-        if (headers.length() > 12) throw BarkaBackendException("Trop d’en-têtes proxy.")
+        if (headers.length() > 12) throw SereneBackendException("Trop d’en-têtes proxy.")
         return headers.keys().asSequence().associateWith { key ->
             val value = headers.optString(key)
             if (!Regex("[A-Za-z0-9-]{1,40}").matches(key) ||
                 value.length > 200 || value.any { it == '\r' || it == '\n' }) {
-                throw BarkaBackendException("En-tête proxy invalide.")
+                throw SereneBackendException("En-tête proxy invalide.")
             }
             value
         }
@@ -160,32 +160,32 @@ object VpnProfileConfigParser {
         val uri = try {
             URI(raw)
         } catch (_: Exception) {
-            throw BarkaBackendException("URI VLESS invalide.")
+            throw SereneBackendException("URI VLESS invalide.")
         }
         if (!uri.scheme.equals("vless", ignoreCase = true)) {
-            throw BarkaBackendException("URI VLESS invalide.")
+            throw SereneBackendException("URI VLESS invalide.")
         }
 
         val uuid = uri.userInfo.orEmpty().substringBefore(':').trim()
         if (!UUID_REGEX.matches(uuid)) {
-            throw BarkaBackendException("UUID VLESS invalide.")
+            throw SereneBackendException("UUID VLESS invalide.")
         }
         val address = uri.host.orEmpty().trim()
-        if (address.isBlank()) throw BarkaBackendException("Adresse VLESS invalide.")
+        if (address.isBlank()) throw SereneBackendException("Adresse VLESS invalide.")
         val port = uri.port
-        if (port !in 1..65535) throw BarkaBackendException("Port VPN invalide : port")
+        if (port !in 1..65535) throw SereneBackendException("Port VPN invalide : port")
 
         val query = parseQuery(uri.rawQuery.orEmpty())
         val network = (query["type"] ?: query["network"] ?: "").lowercase()
         if (network != "ws") {
-            throw BarkaBackendException("Barka Tunnel attend VLESS WebSocket (ws).")
+            throw SereneBackendException("Serene Tunnel attend VLESS WebSocket (ws).")
         }
         val security = (query["security"] ?: "none").lowercase()
         if (security !in setOf("tls", "none")) {
-            throw BarkaBackendException("Sécurité VLESS invalide.")
+            throw SereneBackendException("Sécurité VLESS invalide.")
         }
         if (json.has("proxy_host") && security != "tls") {
-            throw BarkaBackendException("Le profil proxy attend TLS.")
+            throw SereneBackendException("Le profil proxy attend TLS.")
         }
         val host = query["host"].orEmpty().ifBlank { address }
         val sni = query["sni"].orEmpty().ifBlank { host }
@@ -219,13 +219,13 @@ object VpnProfileConfigParser {
             password = requiredString(json, "password"),
             udpGwHost = json.optString("udpgw_host", "127.0.0.1").trim().ifBlank { "127.0.0.1" },
             udpGwPort = json.optInt("udpgw_port", 7300).also {
-                if (it !in 1..65535) throw BarkaBackendException("Port UDPGW invalide.")
+                if (it !in 1..65535) throw SereneBackendException("Port UDPGW invalide.")
             }
         )
 
     private fun requiredString(json: JSONObject, key: String): String =
         json.optString(key).trim().ifBlank {
-            throw BarkaBackendException("Champ VPN manquant : $key")
+            throw SereneBackendException("Champ VPN manquant : $key")
         }
 
     private fun requiredStringAny(json: JSONObject, vararg keys: String): String {
@@ -233,7 +233,7 @@ object VpnProfileConfigParser {
             val value = json.optString(key).trim()
             if (value.isNotBlank()) return value
         }
-        throw BarkaBackendException("Champ VPN manquant : ${keys.first()}")
+        throw SereneBackendException("Champ VPN manquant : ${keys.first()}")
     }
 
     private fun optionalStringAny(json: JSONObject, vararg keys: String): String? {
@@ -257,7 +257,7 @@ object VpnProfileConfigParser {
             }
             if (value in 1..65535) return value
         }
-        throw BarkaBackendException("Port VPN invalide : ${keys.first()}")
+        throw SereneBackendException("Port VPN invalide : ${keys.first()}")
     }
 
     private fun resolverHost(value: String): String {
