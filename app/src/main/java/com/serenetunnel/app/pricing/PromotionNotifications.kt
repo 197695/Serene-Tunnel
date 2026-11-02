@@ -17,11 +17,11 @@ import com.serenetunnel.app.reseller.ResellerPurchaseActivity
 
 /** One alert per offer and promotion period, independent of catalog revisions. */
 object PromotionNotifications {
-    private const val CHANNEL = "barka_promotions"
+    private const val CHANNEL = "serene_promotions"
 
     @Synchronized fun publish(context: Context) {
         val catalog = PricingStore.read(context)
-        val prefs = context.getSharedPreferences("barka_promotion_alerts", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("serene_promotion_alerts", Context.MODE_PRIVATE)
         val manager = NotificationManagerCompat.from(context)
         if (Build.VERSION.SDK_INT >= 33 && ContextCompat.checkSelfPermission(context,
                 Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
@@ -48,12 +48,12 @@ object PromotionNotifications {
             val message = context.getString(if (reseller) R.string.promotion_alert_reseller else R.string.promotion_alert_subscription,
                 promo.amount)
             val notification = NotificationCompat.Builder(context, CHANNEL)
-                .setSmallIcon(R.drawable.ic_notification_barka)
+                .setSmallIcon(R.drawable.ic_notification_serene)
                 .setContentTitle(context.getString(R.string.promotion_alert_title))
                 .setContentText(message).setStyle(NotificationCompat.BigTextStyle().bigText(message))
                 .setContentIntent(destination).setAutoCancel(true)
                 .setTimeoutAfter((promo.endsAt - catalog.serverTime) * 1000)
-                .setColor(ContextCompat.getColor(context, R.color.barka_blue)).build()
+                .setColor(ContextCompat.getColor(context, R.color.serene_blue)).build()
             try {
                 manager.notify(id, notification)
                 prefs.edit().putString(key, identity).commit()

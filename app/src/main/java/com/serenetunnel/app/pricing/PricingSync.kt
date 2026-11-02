@@ -11,7 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.work.*
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -42,14 +42,14 @@ object PricingSync : Application.ActivityLifecycleCallbacks {
         }
         val work = PeriodicWorkRequestBuilder<PricingWorker>(15, TimeUnit.MINUTES)
             .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()).build()
-        WorkManager.getInstance(application).enqueueUniquePeriodicWork("barka-pricing", ExistingPeriodicWorkPolicy.KEEP, work)
+        WorkManager.getInstance(application).enqueueUniquePeriodicWork("serene-pricing", ExistingPeriodicWorkPolicy.KEEP, work)
     }
     fun refresh(context: Context) {
         if (!busy.compareAndSet(false, true)) return
         val application = context.applicationContext
         Thread {
             try {
-                PricingStore.save(application, BarkaBackendClient(application).getPricing())
+                PricingStore.save(application, SereneBackendClient(application).getPricing())
                 PromotionNotifications.publish(application)
             }
             catch (_: Exception) { /* Keep the last valid catalog without a popup. */ }
@@ -73,7 +73,7 @@ object PricingSync : Application.ActivityLifecycleCallbacks {
 
 class PricingWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result = try {
-        PricingStore.save(applicationContext, BarkaBackendClient(applicationContext).getPricing())
+        PricingStore.save(applicationContext, SereneBackendClient(applicationContext).getPricing())
         PromotionNotifications.publish(applicationContext)
         Result.success()
     } catch (_: Exception) { Result.retry() }
