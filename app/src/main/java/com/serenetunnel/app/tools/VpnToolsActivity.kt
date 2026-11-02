@@ -9,7 +9,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.serenetunnel.app.R
 import com.serenetunnel.app.ui.SystemBars
-import com.serenetunnel.app.vpnc6.BarkaVpnService
+import com.serenetunnel.app.vpnc6.SereneVpnService
 import com.google.android.material.button.MaterialButton
 import java.net.Inet4Address
 import java.net.InetAddress
@@ -37,8 +37,8 @@ class VpnToolsActivity : AppCompatActivity() {
             if (isShare || speed != null) handler.postDelayed(this, 1000)
         }
     }
-    private fun vpnAlive() = port != null && BarkaVpnService.connectedSocksPort() == port &&
-        BarkaVpnService.connectionSnapshot().connectedAtElapsedMs == epoch
+    private fun vpnAlive() = port != null && SereneVpnService.connectedSocksPort() == port &&
+        SereneVpnService.connectionSnapshot().connectedAtElapsedMs == epoch
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vpn_tools); SystemBars.apply(this)
@@ -79,8 +79,8 @@ class VpnToolsActivity : AppCompatActivity() {
         findViewById<View>(R.id.shareAddressLabel).visibility = addressVisibility
     }
     private fun start() {
-        port = BarkaVpnService.connectedSocksPort()
-        epoch = BarkaVpnService.connectionSnapshot().connectedAtElapsedMs
+        port = SereneVpnService.connectedSocksPort()
+        epoch = SereneVpnService.connectionSnapshot().connectedAtElapsedMs
         if (!vpnAlive()) { status.setText(R.string.tools_vpn_required); return }
         if (isShare) {
             refreshAddresses()
@@ -137,7 +137,7 @@ class VpnToolsActivity : AppCompatActivity() {
         findViewById<View>(R.id.shareDetails).visibility = if (current == null) View.GONE else View.VISIBLE
         findViewById<TextView>(R.id.shareAddress).text = current?.address.orEmpty()
         findViewById<TextView>(R.id.sharePort).text = current?.port?.toString().orEmpty()
-        findViewById<TextView>(R.id.shareUsername).text = if (current == null) "" else "barka"
+        findViewById<TextView>(R.id.shareUsername).text = if (current == null) "" else "serene"
         findViewById<TextView>(R.id.sharePassword).text = current?.password.orEmpty()
         status.setText(if (current != null) R.string.share_active else VpnShareService.error ?: R.string.tools_ready)
     }

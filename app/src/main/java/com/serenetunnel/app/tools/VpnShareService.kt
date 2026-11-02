@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.*
 import androidx.core.app.NotificationCompat
 import com.serenetunnel.app.R
-import com.serenetunnel.app.vpnc6.BarkaVpnService
+import com.serenetunnel.app.vpnc6.SereneVpnService
 import java.net.InetAddress
 import java.security.SecureRandom
 
@@ -15,8 +15,8 @@ class VpnShareService : Service() {
     private val handler = Handler(Looper.getMainLooper())
     private var socksPort: Int? = null
     private var epoch = 0L
-    private fun vpnAlive() = socksPort != null && BarkaVpnService.connectedSocksPort() == socksPort &&
-        BarkaVpnService.connectionSnapshot().connectedAtElapsedMs == epoch
+    private fun vpnAlive() = socksPort != null && SereneVpnService.connectedSocksPort() == socksPort &&
+        SereneVpnService.connectionSnapshot().connectedAtElapsedMs == epoch
     private val monitor = object : Runnable {
         override fun run() {
             if (!vpnAlive()) { stopSelf(); return }
@@ -38,12 +38,12 @@ class VpnShareService : Service() {
             .setContentTitle(getString(R.string.vpn_share_title)).setContentText(getString(R.string.share_background_active))
             .setContentIntent(open).setOngoing(true).addAction(0, getString(R.string.tools_stop), stop).build())
         try {
-            socksPort = BarkaVpnService.connectedSocksPort()
-            epoch = BarkaVpnService.connectionSnapshot().connectedAtElapsedMs
+            socksPort = SereneVpnService.connectedSocksPort()
+            epoch = SereneVpnService.connectionSnapshot().connectedAtElapsedMs
             check(vpnAlive())
             val address = InetAddress.getByName(requireNotNull(intent.getStringExtra("address")))
             val password = ByteArray(12).also { SecureRandom().nextBytes(it) }.joinToString("") { "%02x".format(it) }
-            val auth = android.util.Base64.encodeToString("barka:$password".toByteArray(), android.util.Base64.NO_WRAP)
+            val auth = android.util.Base64.encodeToString("serene:$password".toByteArray(), android.util.Base64.NO_WRAP)
             proxy = VpnShareProxy(address, socksPort!!, "Basic $auth", ::vpnAlive).also { it.start() }
             state = State(address.hostAddress!!, proxy!!.port, password)
             handler.post(monitor)
@@ -57,7 +57,7 @@ class VpnShareService : Service() {
         super.onDestroy()
     }
     companion object {
-        private const val CHANNEL = "barka_vpn_share"
+        private const val CHANNEL = "serene_vpn_share"
         const val STOP = "com.serenetunnel.app.STOP_SHARE"
         @Volatile var state: State? = null; private set
         @Volatile var error: Int? = null; private set

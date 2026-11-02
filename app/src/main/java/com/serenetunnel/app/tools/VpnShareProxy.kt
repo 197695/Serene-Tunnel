@@ -35,7 +35,7 @@ class VpnShareProxy(private val address: InetAddress, private val socksPort: Int
                     }
                 }
             } catch (_: Exception) { close() }
-        }, "barka-share-listener").start()
+        }, "serene-share-listener").start()
     }
     private fun serve(client: Socket) {
         try {
@@ -56,7 +56,7 @@ class VpnShareProxy(private val address: InetAddress, private val socksPort: Int
             val auth = headers.filter { it.first == "proxy-authorization" }
             if (auth.size != 1 || !MessageDigest.isEqual(auth[0].second.toByteArray(), authorization.toByteArray())) {
                 client.getOutputStream().write(("HTTP/1.1 407 Proxy Authentication Required\r\n" +
-                    "Proxy-Authenticate: Basic realm=\"Barka Tunnel\"\r\nConnection: close\r\nContent-Length: 0\r\n\r\n").toByteArray())
+                    "Proxy-Authenticate: Basic realm=\"Serene Tunnel\"\r\nConnection: close\r\nContent-Length: 0\r\n\r\n").toByteArray())
                 return
             }
             check(vpnAlive())
