@@ -20,7 +20,7 @@ import com.google.android.material.button.MaterialButton
 
 class SettingsActivity : AppCompatActivity() {
 
-    private val prefsName = "barka_settings"
+    private val prefsName = "serene_settings"
     private lateinit var updateCoordinator: AppUpdateCoordinator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,19 +143,19 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         findViewById<MaterialButton>(R.id.telegramBotButton).setOnClickListener {
-            try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/rhaffshopbot"))) }
+            try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/sereneshopbot"))) }
             catch (_: android.content.ActivityNotFoundException) {
                 android.widget.Toast.makeText(this, R.string.browser_unavailable, android.widget.Toast.LENGTH_LONG).show()
             }
         }
 
         findViewById<MaterialButton>(R.id.telegramChannelButton).setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/barkaTunnel")))
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/SereneTunnel")))
         }
 
         findViewById<MaterialButton>(R.id.shopButton).setOnClickListener {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://rhaffservice.com/")))
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://sereneservice.com/")))
             } catch (_: android.content.ActivityNotFoundException) {
                 android.widget.Toast.makeText(this, R.string.browser_unavailable, android.widget.Toast.LENGTH_LONG).show()
             }
@@ -184,7 +184,7 @@ class SettingsActivity : AppCompatActivity() {
         val text = getString(R.string.share_download_format, apkUrl)
         val sendIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_SUBJECT, "Barka Tunnel")
+            putExtra(Intent.EXTRA_SUBJECT, "Serene Tunnel")
             putExtra(Intent.EXTRA_TEXT, text)
         }
         startActivity(
