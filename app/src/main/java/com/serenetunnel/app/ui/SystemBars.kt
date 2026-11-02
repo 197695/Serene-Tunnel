@@ -10,8 +10,8 @@ object SystemBars {
     fun apply(activity: Activity) {
         val window = activity.window
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = activity.getColor(R.color.barka_background)
-        window.navigationBarColor = activity.getColor(R.color.barka_background)
+        window.statusBarColor = activity.getColor(R.color.serene_background)
+        window.navigationBarColor = activity.getColor(R.color.serene_background)
         val light = (activity.resources.configuration.uiMode and
             android.content.res.Configuration.UI_MODE_NIGHT_MASK) != android.content.res.Configuration.UI_MODE_NIGHT_YES
         WindowCompat.getInsetsController(window, window.decorView).apply {
