@@ -6,7 +6,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.serenetunnel.app.R
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.journal.AppLogStore
 import com.serenetunnel.app.ui.SystemBars
 import com.google.android.material.button.MaterialButton
@@ -65,7 +65,7 @@ class ActivationActivity : AppCompatActivity() {
 
             Thread {
                 try {
-                    val result = BarkaBackendClient(this).redeemActivationCode(code)
+                    val result = SereneBackendClient(this).redeemActivationCode(code)
                     runOnUiThread {
                         activateButton.isEnabled = true
                         if (result.success) {
