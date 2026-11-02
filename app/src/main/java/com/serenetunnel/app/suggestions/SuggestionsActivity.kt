@@ -8,7 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.serenetunnel.app.R
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.ui.SystemBars
 import com.google.android.material.button.MaterialButton
 import java.util.UUID
@@ -18,7 +18,7 @@ class SuggestionsActivity : AppCompatActivity() {
     private val worker = Executors.newSingleThreadExecutor()
     private val handler = Handler(Looper.getMainLooper())
     private val prefs by lazy { getSharedPreferences("serene_suggestions", MODE_PRIVATE) }
-    private val client by lazy { BarkaBackendClient(this) }
+    private val client by lazy { SereneBackendClient(this) }
     private lateinit var senderName: EditText
     private lateinit var message: EditText
     private lateinit var status: TextView
