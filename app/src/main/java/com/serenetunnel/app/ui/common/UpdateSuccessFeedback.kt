@@ -35,7 +35,7 @@ object UpdateSuccessFeedback {
             }
         }
         content.addView(ImageView(activity).apply {
-            setImageResource(R.drawable.ic_barka_logo)
+            setImageResource(R.drawable.ic_serene_logo)
             importantForAccessibility = android.view.View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }, LinearLayout.LayoutParams(dp(36), dp(36)).apply { marginEnd = dp(12) })
         content.addView(TextView(activity).apply {
