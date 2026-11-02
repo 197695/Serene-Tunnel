@@ -2,7 +2,7 @@ package com.serenetunnel.app.vpn
 
 import com.wireguard.android.backend.Tunnel
 
-class BarkaTunnel(
+class SereneTunnel(
     private val tunnelName: String = "Serene"
 ) : Tunnel {
 

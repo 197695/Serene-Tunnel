@@ -1,7 +1,7 @@
 package com.serenetunnel.app.vpn
 
 import com.serenetunnel.app.access.AccessProvider
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 
 class ProtectedVpnController private constructor(
     private val vpnController: VpnController,
@@ -18,7 +18,7 @@ class ProtectedVpnController private constructor(
 
     constructor(
         vpnController: VpnController,
-        backendClient: BarkaBackendClient
+        backendClient: SereneBackendClient
     ) : this(
         vpnController = vpnController,
         accessCheck = { backendClient.isAccessAllowed() }
