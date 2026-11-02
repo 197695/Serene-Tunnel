@@ -70,12 +70,12 @@ import com.serenetunnel.app.ui.home.HomeUiBinder
 import com.serenetunnel.app.ui.home.ConnectionTimeFormatter
 import com.serenetunnel.app.ui.home.NetworkOption
 import com.serenetunnel.app.ui.pager.StaticPageAdapter
-import com.serenetunnel.app.backend.BarkaBackendClient
+import com.serenetunnel.app.backend.SereneBackendClient
 import com.serenetunnel.app.trial.TrialUsageStore
 import com.serenetunnel.app.ui.common.GiftFireworks
 import com.serenetunnel.app.ui.common.PressFeedback
 import com.serenetunnel.app.update.AppUpdateCoordinator
-import com.serenetunnel.app.vpnc6.BarkaVpnService
+import com.serenetunnel.app.vpnc6.SereneVpnService
 import com.serenetunnel.app.vpnprofile.VpnProfileRepository
 import com.google.android.material.button.MaterialButton
 import java.util.concurrent.atomic.AtomicBoolean
@@ -251,7 +251,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val vpnProfileRepository by lazy {
-        VpnProfileRepository(BarkaBackendClient(this), this)
+        VpnProfileRepository(SereneBackendClient(this), this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -295,13 +295,13 @@ class MainActivity : AppCompatActivity() {
 
         buttonFreeTrial = homePage.findViewById(R.id.buttonFreeTrial)
         updateGiftVisibility()
-        val brandBarka = getString(R.string.main_brand_barka)
+        val brandSerene = getString(R.string.main_brand_serene)
         val brandTunnel = getString(R.string.main_brand_tunnel)
         homePage.findViewById<TextView>(R.id.homeBrandName).text =
-            SpannableString("$brandBarka $brandTunnel").apply {
+            SpannableString("$brandSerene $brandTunnel").apply {
                 setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.barka_blue)),
-                    brandBarka.length + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(ContextCompat.getColor(this@MainActivity, R.color.serene_blue)),
+                    brandSerene.length + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
         val buttonRefresh = homePage.findViewById<android.view.View>(R.id.buttonRefresh)
@@ -352,7 +352,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         timerController.start()
-        AppLogStore.add(this, "Barka Tunnel démarré.")
+        AppLogStore.add(this, "Serene Tunnel démarré.")
         refreshNetworkIp()
         initializeHomeRuntime()
         requestUpdateNotificationPermissionIfNeeded()
@@ -494,13 +494,13 @@ class MainActivity : AppCompatActivity() {
             sharedNavHomeLabel.setTextColor(
                 ContextCompat.getColor(
                     this,
-                    if (homeActive) R.color.barka_blue else R.color.barka_text_secondary
+                    if (homeActive) R.color.serene_blue else R.color.serene_text_secondary
                 )
             )
             sharedNavJournalLabel.setTextColor(
                 ContextCompat.getColor(
                     this,
-                    if (homeActive) R.color.barka_text_secondary else R.color.barka_blue
+                    if (homeActive) R.color.serene_text_secondary else R.color.serene_blue
                 )
             )
             sharedNavHomeLabel.setTypeface(
@@ -699,13 +699,13 @@ class MainActivity : AppCompatActivity() {
             refreshNetworkIp()
             syncVpnRuntimeState()
             if (
-                BarkaVpnService.connectionSnapshot().state ==
-                    BarkaVpnService.RuntimeConnectionState.DISCONNECTED &&
+                SereneVpnService.connectionSnapshot().state ==
+                    SereneVpnService.RuntimeConnectionState.DISCONNECTED &&
                 !pendingConnectAfterInitialSync &&
                 !pendingConnectAfterVpnPermission &&
                 !connectionStartRequested
             ) {
-                BarkaVpnService.cancelConnectingNotification(this)
+                SereneVpnService.cancelConnectingNotification(this)
             }
             restoreAccessSnapshot()
             refreshHomeState()
@@ -739,7 +739,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeHomeRuntime() {
-        val app = application as BarkaApplication
+        val app = application as SereneApplication
 
         val runtime = HomeRuntimeFactory.create(
             context = this,
@@ -767,29 +767,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun syncVpnRuntimeState(): HomeConnectionState? {
         val controller = homeController ?: return null
-        val snapshot = BarkaVpnService.connectionSnapshot()
+        val snapshot = SereneVpnService.connectionSnapshot()
         val connection = when {
             disconnectRequested &&
-                snapshot.state != BarkaVpnService.RuntimeConnectionState.DISCONNECTED ->
+                snapshot.state != SereneVpnService.RuntimeConnectionState.DISCONNECTED ->
                 HomeConnectionState.Disconnecting
-            snapshot.state == BarkaVpnService.RuntimeConnectionState.DISCONNECTED ->
+            snapshot.state == SereneVpnService.RuntimeConnectionState.DISCONNECTED ->
                 if (connectionStartRequested) {
                     HomeConnectionState.Connecting
                 } else {
                     HomeConnectionState.Disconnected
                 }
-            snapshot.state == BarkaVpnService.RuntimeConnectionState.CONNECTING ->
+            snapshot.state == SereneVpnService.RuntimeConnectionState.CONNECTING ->
                 HomeConnectionState.Connecting
-            snapshot.state == BarkaVpnService.RuntimeConnectionState.CONNECTED ->
+            snapshot.state == SereneVpnService.RuntimeConnectionState.CONNECTED ->
                 HomeConnectionState.Connected(
                     snapshot.profileName ?: controller.currentState().selectedNetwork?.displayName.orEmpty()
                 )
             else -> HomeConnectionState.Disconnecting
         }
 
-        if (snapshot.state == BarkaVpnService.RuntimeConnectionState.CONNECTED) {
+        if (snapshot.state == SereneVpnService.RuntimeConnectionState.CONNECTED) {
             connectionStartRequested = false
-        } else if (snapshot.state == BarkaVpnService.RuntimeConnectionState.DISCONNECTED && disconnectRequested) {
+        } else if (snapshot.state == SereneVpnService.RuntimeConnectionState.DISCONNECTED && disconnectRequested) {
             disconnectRequested = false
         }
 
@@ -859,7 +859,7 @@ class MainActivity : AppCompatActivity() {
         val state = homeController?.currentState()?.connection
         return connectionStartRequested || disconnectRequested ||
             pendingConnectAfterInitialSync || pendingConnectAfterVpnPermission ||
-            BarkaVpnService.connectionSnapshot().state != BarkaVpnService.RuntimeConnectionState.DISCONNECTED ||
+            SereneVpnService.connectionSnapshot().state != SereneVpnService.RuntimeConnectionState.DISCONNECTED ||
             state is HomeConnectionState.Connected || state is HomeConnectionState.Connecting ||
             state is HomeConnectionState.Disconnecting
     }
@@ -1075,8 +1075,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 connectionStartRequested = false
-                val snapshot = BarkaVpnService.connectionSnapshot()
-                if (snapshot.state == BarkaVpnService.RuntimeConnectionState.CONNECTED) {
+                val snapshot = SereneVpnService.connectionSnapshot()
+                if (snapshot.state == SereneVpnService.RuntimeConnectionState.CONNECTED) {
                     val connectedName = snapshot.profileName
                         ?: controller.currentState().selectedNetwork?.displayName.orEmpty()
                     vibrateOnce(CONNECTED_VIBRATION_MS)
@@ -1084,8 +1084,8 @@ class MainActivity : AppCompatActivity() {
                         this,
                         "VPN connecté${connectedName.takeIf { it.isNotBlank() }?.let { " • $it" }.orEmpty()}."
                     )
-                } else if (snapshot.state == BarkaVpnService.RuntimeConnectionState.DISCONNECTED) {
-                    BarkaVpnService.cancelConnectingNotification(this)
+                } else if (snapshot.state == SereneVpnService.RuntimeConnectionState.DISCONNECTED) {
+                    SereneVpnService.cancelConnectingNotification(this)
                 }
 
                 syncVpnRuntimeState()
@@ -1114,8 +1114,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 disconnectRequested = false
-                val snapshot = BarkaVpnService.connectionSnapshot()
-                if (snapshot.state == BarkaVpnService.RuntimeConnectionState.DISCONNECTED) {
+                val snapshot = SereneVpnService.connectionSnapshot()
+                if (snapshot.state == SereneVpnService.RuntimeConnectionState.DISCONNECTED) {
                     timerController.stopConnectionTimer()
                 }
                 syncVpnRuntimeState()
@@ -1133,7 +1133,7 @@ class MainActivity : AppCompatActivity() {
         pendingConnectAfterVpnPermission = false
         connectionStartRequested = false
         disconnectRequested = false
-        BarkaVpnService.cancelConnectingNotification(this)
+        SereneVpnService.cancelConnectingNotification(this)
         AppLogStore.add(this, "Déconnexion en cours.")
         handleHomeResult(controller.syncConnection(HomeConnectionState.Disconnected))
         timerController.stopConnectionTimer()
@@ -1146,8 +1146,8 @@ class MainActivity : AppCompatActivity() {
         connectionStartRequested = false
         disconnectRequested = false
         val controller = homeController ?: return
-        val runtimeState = BarkaVpnService.connectionSnapshot().state
-        if (runtimeState == BarkaVpnService.RuntimeConnectionState.DISCONNECTED) {
+        val runtimeState = SereneVpnService.connectionSnapshot().state
+        if (runtimeState == SereneVpnService.RuntimeConnectionState.DISCONNECTED) {
             handleHomeResult(controller.syncConnection(HomeConnectionState.Disconnected))
         }
     }
@@ -1155,7 +1155,7 @@ class MainActivity : AppCompatActivity() {
     private fun recordConnectionAttemptAsync() {
         Thread {
             runCatching {
-                BarkaBackendClient(applicationContext).markConnectionAttempt()
+                SereneBackendClient(applicationContext).markConnectionAttempt()
             }
         }.start()
     }
@@ -1483,7 +1483,7 @@ class MainActivity : AppCompatActivity() {
                 ColorDrawable(Color.TRANSPARENT)
             )
             setGravity(Gravity.RIGHT)
-            setWindowAnimations(R.style.BarkaSideMenuAnimation)
+            setWindowAnimations(R.style.SereneSideMenuAnimation)
             setLayout(
                 sideMenuWidth(),
                 WindowManager.LayoutParams.MATCH_PARENT
@@ -1561,7 +1561,7 @@ class MainActivity : AppCompatActivity() {
         dialog.window?.decorView?.let(PressFeedback::applyToTree)
 
         dialog.window?.apply {
-            navigationBarColor = ContextCompat.getColor(this@MainActivity, R.color.barka_card)
+            navigationBarColor = ContextCompat.getColor(this@MainActivity, R.color.serene_card)
             setLayout(
                 sideMenuWidth(),
                 WindowManager.LayoutParams.MATCH_PARENT
@@ -1637,7 +1637,7 @@ class MainActivity : AppCompatActivity() {
             ))
             return
         }
-        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_barka_logo) ?: return
+        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_serene_logo) ?: return
         val size = (72f * resources.displayMetrics.density).toInt().coerceAtLeast(72)
         val inset = (4f * resources.displayMetrics.density).toInt()
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
@@ -1758,7 +1758,7 @@ class MainActivity : AppCompatActivity() {
                 .apply()
             mainHandler.removeCallbacks(initialSyncRetryRunnable)
             if (!update.updateAvailable) {
-                AppLogStore.add(this, "Barka Tunnel est à jour.")
+                AppLogStore.add(this, "Serene Tunnel est à jour.")
             }
             resumePendingConnectionAfterInitialSync()
         }
@@ -1778,8 +1778,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun applySystemBars() {
-        window.statusBarColor = ContextCompat.getColor(this, R.color.barka_background)
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.barka_background)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.serene_background)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.serene_background)
         val nightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
         val lightIcons = nightMode != android.content.res.Configuration.UI_MODE_NIGHT_YES
         WindowCompat.getInsetsController(window, window.decorView)?.apply {
@@ -1794,7 +1794,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         if (
-            (!vpnProfileRepository.hasValidatedInternet() && BarkaVpnService.connectedSocksPort() == null) ||
+            (!vpnProfileRepository.hasValidatedInternet() && SereneVpnService.connectedSocksPort() == null) ||
             !vpnProfileRepository.shouldRefresh(PROFILE_SYNC_INTERVAL_MS)
         ) {
             return
@@ -1804,7 +1804,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshVpnServices(force: Boolean) {
         if (
-            (!vpnProfileRepository.hasValidatedInternet() && BarkaVpnService.connectedSocksPort() == null) ||
+            (!vpnProfileRepository.hasValidatedInternet() && SereneVpnService.connectedSocksPort() == null) ||
             (!force && !vpnProfileRepository.shouldRefresh(PROFILE_SYNC_INTERVAL_MS))
         ) {
             return
@@ -1857,8 +1857,8 @@ class MainActivity : AppCompatActivity() {
     private fun refreshNetworkIp() {
         val info = NetworkIpProvider.getCurrent(
             this,
-            includeVpn = BarkaVpnService.connectionSnapshot().state !=
-                BarkaVpnService.RuntimeConnectionState.DISCONNECTED
+            includeVpn = SereneVpnService.connectionSnapshot().state !=
+                SereneVpnService.RuntimeConnectionState.DISCONNECTED
         )
         val cellularIp = info.ip.takeIf {
             info.transportType == NetworkTransport.CELLULAR &&
@@ -1903,11 +1903,11 @@ class MainActivity : AppCompatActivity() {
         if (::networkTransportIcon.isInitialized) {
             when (info.transportType) {
                 NetworkTransport.CELLULAR -> {
-                    networkTransportIcon.setImageResource(R.drawable.ic_mobile_barka)
+                    networkTransportIcon.setImageResource(R.drawable.ic_mobile_serene)
                     networkTransportIcon.visibility = View.VISIBLE
                 }
                 NetworkTransport.WIFI, NetworkTransport.VPN -> {
-                    networkTransportIcon.setImageResource(R.drawable.ic_wifi_barka)
+                    networkTransportIcon.setImageResource(R.drawable.ic_wifi_serene)
                     networkTransportIcon.visibility = View.VISIBLE
                 }
                 NetworkTransport.OTHER -> {
@@ -1924,14 +1924,14 @@ class MainActivity : AppCompatActivity() {
             NetworkIpVisualState.INVALID -> R.drawable.bg_network_ip_invalid
         }
         val valueColor = when (state) {
-            NetworkIpVisualState.NEUTRAL -> R.color.barka_text
-            NetworkIpVisualState.VALID -> R.color.barka_green
-            NetworkIpVisualState.INVALID -> R.color.barka_red
+            NetworkIpVisualState.NEUTRAL -> R.color.serene_text
+            NetworkIpVisualState.VALID -> R.color.serene_green
+            NetworkIpVisualState.INVALID -> R.color.serene_red
         }
         val statusColor = when (state) {
-            NetworkIpVisualState.NEUTRAL -> R.color.barka_text_secondary
-            NetworkIpVisualState.VALID -> R.color.barka_green
-            NetworkIpVisualState.INVALID -> R.color.barka_red
+            NetworkIpVisualState.NEUTRAL -> R.color.serene_text_secondary
+            NetworkIpVisualState.VALID -> R.color.serene_green
+            NetworkIpVisualState.INVALID -> R.color.serene_red
         }
         networkIpCard.setBackgroundResource(background)
         networkIpValue.setTextColor(ContextCompat.getColor(this, valueColor))
@@ -1991,13 +1991,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val PREFERENCES_NAME = "barka_home_preferences"
+        private const val PREFERENCES_NAME = "serene_home_preferences"
         private const val PREF_SELECTED_NETWORK = "selected_network_id"
         private const val PREF_SELECTED_NETWORK_INSTALL_ID = "selected_network_install_id"
         private const val PREF_INITIAL_REMOTE_SYNC_COMPLETE = "initial_remote_sync_complete"
         private const val PREF_INITIAL_REMOTE_SYNC_INSTALL_ID = "initial_remote_sync_install_id"
         private const val PREF_CHANNEL_INVITE_INSTALL_STAMP = "channel_invite_install_stamp"
-        private const val TELEGRAM_CHANNEL_URL = "https://t.me/barkaTunnel"
+        private const val TELEGRAM_CHANNEL_URL = "https://t.me/sereneTunnel"
         private const val PRESS_VIBRATION_MS = 80L
         private const val CONNECTED_VIBRATION_MS = 160L
         private const val MAX_VIBRATION_AMPLITUDE = 255
