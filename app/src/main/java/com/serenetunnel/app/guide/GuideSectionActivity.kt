@@ -30,15 +30,15 @@ class GuideSectionActivity : AppCompatActivity() {
         for (paragraph in text.split("\n\n")) {
             val end = offset + (paragraph.indexOf('\n').takeIf { it >= 0 } ?: paragraph.length)
             styled.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD), offset, end, 0)
-            styled.setSpan(android.text.style.ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(this, R.color.barka_blue)), offset, end, 0)
+            styled.setSpan(android.text.style.ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(this, R.color.serene_blue)), offset, end, 0)
             offset += paragraph.length + 2
         }
         findViewById<TextView>(R.id.guideSectionBody).text = styled
     }
 
     private fun contentFor(section: Int): SectionContent = when (section) {
-        1 -> SectionContent(R.string.guide_1_title, R.string.guide_1_text, R.drawable.tile_ic_guide_barka)
-        2 -> SectionContent(R.string.guide_2_title, R.string.guide_2_text, R.drawable.tile_ic_mobile_barka)
+        1 -> SectionContent(R.string.guide_1_title, R.string.guide_1_text, R.drawable.tile_ic_guide_serene)
+        2 -> SectionContent(R.string.guide_2_title, R.string.guide_2_text, R.drawable.tile_ic_mobile_serene)
         3 -> SectionContent(R.string.guide_3_title, R.string.guide_3_text, R.drawable.tile_ic_menu_ip_finder)
         4 -> SectionContent(R.string.guide_4_title, R.string.guide_4_text, R.drawable.tile_ic_menu_card_line)
         5 -> SectionContent(R.string.guide_5_title, R.string.guide_5_text, R.drawable.tile_ic_menu_key_line)
@@ -47,7 +47,7 @@ class GuideSectionActivity : AppCompatActivity() {
         9 -> SectionContent(R.string.guide_9_title, R.string.guide_9_text, R.drawable.ic_vpn_share)
         10 -> SectionContent(R.string.guide_10_title, R.string.guide_10_text, R.drawable.ic_vpn_speed)
         11 -> SectionContent(R.string.guide_11_title, R.string.guide_11_text, R.drawable.ic_menu_person_line)
-        12 -> SectionContent(R.string.guide_12_title, R.string.guide_12_text, R.drawable.ic_refresh_barka)
+        12 -> SectionContent(R.string.guide_12_title, R.string.guide_12_text, R.drawable.ic_refresh_serene)
         else -> SectionContent(R.string.guide_8_title, R.string.guide_8_text, R.drawable.tile_ic_menu_settings_line)
     }
 
