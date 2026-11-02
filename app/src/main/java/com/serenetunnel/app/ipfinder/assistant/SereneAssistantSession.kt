@@ -11,7 +11,7 @@ import android.provider.Settings
 import android.service.voice.VoiceInteractionSession
 import com.serenetunnel.app.ipfinder.IpFinderActivity
 
-class BarkaAssistantSession(
+class SereneAssistantSession(
     private val appContext: Context
 ) : VoiceInteractionSession(appContext) {
 
@@ -31,14 +31,14 @@ class BarkaAssistantSession(
 
     override fun onShow(args: Bundle?, showFlags: Int) {
         super.onShow(args, showFlags)
-        if (commandStarted || args?.getString(BarkaAssistantService.KEY_SESSION_ACTION) !=
-            BarkaAssistantService.SESSION_ACTION_SET_AIRPLANE_MODE) {
+        if (commandStarted || args?.getString(SereneAssistantService.KEY_SESSION_ACTION) !=
+            SereneAssistantService.SESSION_ACTION_SET_AIRPLANE_MODE) {
             finish()
             return
         }
 
         commandStarted = true
-        requestedState = args.getBoolean(BarkaAssistantService.KEY_AIRPLANE_MODE_ENABLED)
+        requestedState = args.getBoolean(SereneAssistantService.KEY_AIRPLANE_MODE_ENABLED)
         commandIssued = requestAirplaneMode(requestedState)
         handler.postDelayed({
             reportCommandIfNeeded()
@@ -69,7 +69,7 @@ class BarkaAssistantSession(
     private fun reportCommandIfNeeded() {
         if (!commandStarted || commandReported) return
         commandReported = true
-        BarkaAssistantService.reportSessionCommand(requestedState, commandIssued)
+        SereneAssistantService.reportSessionCommand(requestedState, commandIssued)
     }
 
     private fun finishAndRestoreIpFinder() {
@@ -77,7 +77,7 @@ class BarkaAssistantSession(
         commandFinished = true
         handler.removeCallbacksAndMessages(null)
         finish()
-        // Do not bring Barka to the foreground while the user is in another app.
+        // Do not bring Serene to the foreground while the user is in another app.
     }
 
     private fun restoreIpFinderTask() {

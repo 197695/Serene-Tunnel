@@ -4,7 +4,7 @@ import android.content.Intent
 import android.speech.RecognitionService
 import android.speech.SpeechRecognizer
 
-class BarkaRecognitionService : RecognitionService() {
+class SereneRecognitionService : RecognitionService() {
 
     override fun onStartListening(recognizerIntent: Intent, listener: Callback) {
         listener.error(SpeechRecognizer.ERROR_CLIENT)

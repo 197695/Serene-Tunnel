@@ -10,7 +10,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.service.voice.VoiceInteractionService
 
-class BarkaAssistantService : VoiceInteractionService() {
+class SereneAssistantService : VoiceInteractionService() {
 
     private val handler = Handler(Looper.getMainLooper())
     private var cycleInProgress = false
@@ -177,17 +177,17 @@ class BarkaAssistantService : VoiceInteractionService() {
         const val ACTION_CYCLE_COMPLETED =
             "com.serenetunnel.app.action.ASSISTANT_AIRPLANE_CYCLE_COMPLETED"
         const val EXTRA_CYCLE_SUCCEEDED = "cycle_succeeded"
-        const val KEY_SESSION_ACTION = "barka_session_action"
+        const val KEY_SESSION_ACTION = "serene_session_action"
         const val KEY_AIRPLANE_MODE_ENABLED = "airplane_mode_enabled"
         const val SESSION_ACTION_SET_AIRPLANE_MODE = "set_airplane_mode"
 
         @Volatile
-        private var activeService: BarkaAssistantService? = null
+        private var activeService: SereneAssistantService? = null
 
         fun isSelected(context: Context): Boolean {
             val serviceComponent = ComponentName(
                 context,
-                BarkaAssistantService::class.java
+                SereneAssistantService::class.java
             )
             val activeServiceSelected = runCatching {
                 VoiceInteractionService.isActiveService(context, serviceComponent)
