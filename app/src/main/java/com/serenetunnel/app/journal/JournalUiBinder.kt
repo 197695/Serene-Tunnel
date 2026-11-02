@@ -26,7 +26,7 @@ class JournalUiBinder(
         if (events.isEmpty()) {
             val empty = TextView(context).apply {
                 setText(R.string.journal_empty)
-                setTextColor(ContextCompat.getColor(context, R.color.barka_text_secondary))
+                setTextColor(ContextCompat.getColor(context, R.color.serene_text_secondary))
                 textSize = 11f
                 setPadding(dp(12), dp(24), dp(12), dp(24))
             }
@@ -77,7 +77,7 @@ class JournalUiBinder(
                 value.startsWith("profils mis à jour") ||
                 value.startsWith("services de connexion synchronisés") -> return null
             value.startsWith("vérification des mises à jour") -> EventType.UPDATE_CHECKING
-            value.startsWith("barka tunnel est à jour") -> EventType.APP_CURRENT
+            value.startsWith("serene tunnel est à jour") -> EventType.APP_CURRENT
             value.startsWith("mise à jour disponible") -> EventType.UPDATE_AVAILABLE
             value.contains("déconnexion en cours") || value.contains("disconnecting") ->
                 EventType.DISCONNECTING
@@ -134,57 +134,57 @@ class JournalUiBinder(
             EventType.CONNECTING -> EventPresentation(
                 title = context.getString(R.string.journal_connecting_title),
                 message = context.getString(R.string.journal_connecting_message, network),
-                colorRes = R.color.barka_orange
+                colorRes = R.color.serene_orange
             )
             EventType.REFUSED -> EventPresentation(
                 title = context.getString(R.string.journal_refused_title),
                 message = context.getString(R.string.journal_refused_message, network),
-                colorRes = R.color.barka_red
+                colorRes = R.color.serene_red
             )
             EventType.RETRY -> EventPresentation(
                 title = context.getString(R.string.journal_retry_title),
                 message = context.getString(R.string.journal_retry_message, network),
-                colorRes = R.color.barka_orange
+                colorRes = R.color.serene_orange
             )
             EventType.CONNECTED -> EventPresentation(
                 title = context.getString(R.string.journal_connected_title),
                 message = context.getString(R.string.journal_connected_message, network),
-                colorRes = R.color.barka_green
+                colorRes = R.color.serene_green
             )
             EventType.DISCONNECTING -> EventPresentation(
                 title = context.getString(R.string.journal_disconnecting_title),
                 message = context.getString(R.string.journal_disconnecting_message),
-                colorRes = R.color.barka_orange
+                colorRes = R.color.serene_orange
             )
             EventType.DISCONNECTED -> EventPresentation(
                 title = context.getString(R.string.journal_disconnected_title),
                 message = context.getString(R.string.journal_disconnected_message),
-                colorRes = R.color.barka_blue
+                colorRes = R.color.serene_blue
             )
             EventType.PROFILE_SYNCING -> EventPresentation(
                 title = context.getString(R.string.journal_profile_syncing_title),
                 message = context.getString(R.string.journal_profile_syncing_message),
-                colorRes = R.color.barka_blue
+                colorRes = R.color.serene_blue
             )
             EventType.PROFILE_SYNCED -> EventPresentation(
                 title = context.getString(R.string.journal_profile_synced_title),
                 message = context.getString(R.string.journal_profile_synced_message),
-                colorRes = R.color.barka_green
+                colorRes = R.color.serene_green
             )
             EventType.UPDATE_CHECKING -> EventPresentation(
                 title = context.getString(R.string.journal_update_checking_title),
                 message = context.getString(R.string.journal_update_checking_message),
-                colorRes = R.color.barka_blue
+                colorRes = R.color.serene_blue
             )
             EventType.APP_CURRENT -> EventPresentation(
                 title = context.getString(R.string.journal_app_current_title),
                 message = context.getString(R.string.journal_app_current_message),
-                colorRes = R.color.barka_green
+                colorRes = R.color.serene_green
             )
             EventType.UPDATE_AVAILABLE -> EventPresentation(
                 title = context.getString(R.string.journal_update_available_title),
                 message = event.detail.orEmpty(),
-                colorRes = R.color.barka_orange
+                colorRes = R.color.serene_orange
             )
             EventType.PING -> {
                 val latency = PING_VALUE.find(event.detail.orEmpty())
@@ -197,18 +197,18 @@ class JournalUiBinder(
                     else
                         context.getString(R.string.journal_latency_message, latency ?: 0L),
                     colorRes = when {
-                        failed -> R.color.barka_red
-                        latency == null -> R.color.barka_blue
-                        latency <= 300L -> R.color.barka_green
-                        latency <= 500L -> R.color.barka_orange
-                        else -> R.color.barka_red
+                        failed -> R.color.serene_red
+                        latency == null -> R.color.serene_blue
+                        latency <= 300L -> R.color.serene_green
+                        latency <= 500L -> R.color.serene_orange
+                        else -> R.color.serene_red
                     }
                 )
             }
             EventType.DIAGNOSTIC -> EventPresentation(
                 title = "Diagnostic VPN",
                 message = event.detail.orEmpty(),
-                colorRes = R.color.barka_blue
+                colorRes = R.color.serene_blue
             )
         }
     }
