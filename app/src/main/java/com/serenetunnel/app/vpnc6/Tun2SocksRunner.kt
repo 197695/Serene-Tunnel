@@ -63,7 +63,7 @@ internal class NativeTun2SocksRunner(private val context: Context) {
                     }
                 }
             }
-        }, "BarkaTun2Socks")
+        }, "SereneTun2Socks")
 
         synchronized(nativeLifecycleLock) {
             if (activeNativeThread?.isAlive == false) {

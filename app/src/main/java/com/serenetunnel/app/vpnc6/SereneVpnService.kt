@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
-class BarkaVpnService : VpnService() {
+class SereneVpnService : VpnService() {
     private val worker = Executors.newSingleThreadExecutor()
     private val accessExecutor = Executors.newSingleThreadScheduledExecutor()
     private var accessFuture: ScheduledFuture<*>? = null
@@ -386,7 +386,7 @@ class BarkaVpnService : VpnService() {
         // Mobile may reach the control API only through the native proxy.
         // Authorize BEFORE establishing TUN or forwarding other applications.
         if (!isConnectOperationActive(connectGeneration)) throw InterruptedException("Connexion annulée.")
-        val access = com.serenetunnel.app.backend.BarkaBackendClient(this).checkAccess(localSocksPort)
+        val access = com.serenetunnel.app.backend.SereneBackendClient(this).checkAccess(localSocksPort)
         if (!access.allowed) throw IllegalStateException("Accès retiré ou expiré.")
         if (!protocolEngine.isRunning()) throw IllegalStateException("Le moteur VPN s’est arrêté pendant la validation.")
         sessionAccessRevision = access.accessRevision
@@ -400,7 +400,7 @@ class BarkaVpnService : VpnService() {
         }
 
         val descriptor = Builder()
-            .setSession("Barka Tunnel")
+            .setSession("Serene Tunnel")
             .setMtu(VPN_MTU)
             .addAddress(VPN_INTERFACE_ADDRESS, 24)
             .addRoute("0.0.0.0", 0)
@@ -618,12 +618,12 @@ class BarkaVpnService : VpnService() {
         var lastUpdateRevision = ""
         accessFuture = accessExecutor.scheduleWithFixedDelay({
             if (connected && !stopping && operationGeneration.get() == accessGeneration) {
-                val access = runCatching { com.serenetunnel.app.backend.BarkaBackendClient(this).checkAccess(socksPort(protocol)) }.getOrNull()
+                val access = runCatching { com.serenetunnel.app.backend.SereneBackendClient(this).checkAccess(socksPort(protocol)) }.getOrNull()
                 val now = android.os.SystemClock.elapsedRealtime()
                 if (now >= nextUpdateCheckAt) {
                     nextUpdateCheckAt = now + 60_000L
                     val update = runCatching {
-                        com.serenetunnel.app.backend.BarkaBackendClient(this)
+                        com.serenetunnel.app.backend.SereneBackendClient(this)
                             .checkAppUpdate(com.serenetunnel.app.BuildConfig.VERSION_CODE.toLong(), socksPort(protocol))
                     }.getOrNull()
                     if (update != null && operationGeneration.get() == accessGeneration && connected && !stopping) {
@@ -643,7 +643,7 @@ class BarkaVpnService : VpnService() {
                     mainHandler.post {
                         if (connected && !stopping && operationGeneration.get() == accessGeneration) {
                             AppLogStore.add(this, "Accès modifié par le serveur. Déconnexion.")
-                            onStartCommand(Intent(this, BarkaVpnService::class.java).setAction(ACTION_DISCONNECT), 0, latestStartId)
+                            onStartCommand(Intent(this, SereneVpnService::class.java).setAction(ACTION_DISCONNECT), 0, latestStartId)
                         }
                     }
                 }
@@ -962,8 +962,8 @@ class BarkaVpnService : VpnService() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification_barka)
-                .setContentTitle("Barka Tunnel")
+                .setSmallIcon(R.drawable.ic_notification_serene)
+                .setContentTitle("Serene Tunnel")
                 .setContentText(text)
                 .setContentIntent(openApp)
                 .setOngoing(true)
@@ -971,17 +971,17 @@ class BarkaVpnService : VpnService() {
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setColor(ContextCompat.getColor(context, R.color.barka_blue))
+                .setColor(ContextCompat.getColor(context, R.color.serene_blue))
                 .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
 
             if (runtimeState == RuntimeConnectionState.CONNECTED) {
                 builder.addAction(
-                    R.drawable.ic_power_barka,
+                    R.drawable.ic_power_serene,
                     context.getString(R.string.disconnect),
                     disconnectPendingIntent(context)
                 )
                 builder.addAction(
-                    R.drawable.ic_refresh_barka,
+                    R.drawable.ic_refresh_serene,
                     context.getString(R.string.reconnect),
                     reconnectPendingIntent(context)
                 )
@@ -1008,7 +1008,7 @@ class BarkaVpnService : VpnService() {
         }
 
         private fun disconnectPendingIntent(context: Context): PendingIntent {
-            val intent = Intent(context, BarkaVpnService::class.java)
+            val intent = Intent(context, SereneVpnService::class.java)
                 .setAction(ACTION_DISCONNECT)
             val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1019,7 +1019,7 @@ class BarkaVpnService : VpnService() {
         }
 
         private fun reconnectPendingIntent(context: Context): PendingIntent {
-            val intent = Intent(context, BarkaVpnService::class.java)
+            val intent = Intent(context, SereneVpnService::class.java)
                 .setAction(ACTION_RECONNECT)
             val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1046,8 +1046,8 @@ class BarkaVpnService : VpnService() {
             manager.createNotificationChannel(channel)
         }
 
-        private const val TAG = "BarkaVpnService"
-        private const val CHANNEL_ID = "barka_vpn_status_v2"
+        private const val TAG = "SereneVpnService"
+        private const val CHANNEL_ID = "serene_vpn_status_v2"
         private const val NOTIFICATION_ID = 6001
         private const val DISCONNECT_REQUEST_CODE = 6002
         private const val RECONNECT_REQUEST_CODE = 6003
@@ -1066,7 +1066,7 @@ class BarkaVpnService : VpnService() {
         private const val CONNECTION_RETRY_DELAY_MS = 1_500L
         private const val DIAGNOSTIC_SOCKS_TIMEOUT_MS = 5_000
         private const val SLOWDNS_SOCKS_TIMEOUT_MS = 8_000
-        private const val SETTINGS_PREFS = "barka_settings"
+        private const val SETTINGS_PREFS = "serene_settings"
         private const val KEY_AUTO_PING = "auto_ping"
         private const val AUTO_PING_TIMEOUT_MS = 2_000
         private const val AUTO_PING_INITIAL_DELAY_SECONDS = 3L

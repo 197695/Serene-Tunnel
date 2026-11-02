@@ -22,7 +22,7 @@ class Tun2SocksRunner(context: Context) {
     private val consumptionSession = java.util.UUID.randomUUID().toString()
     private val stateLock = Any()
     private val commandLock = Any()
-    private val replyThread = HandlerThread("BarkaTun2SocksReplies").apply { start() }
+    private val replyThread = HandlerThread("SereneTun2SocksReplies").apply { start() }
     private val stopped = AtomicBoolean(false)
     @Volatile private var lastConfirmedRunningAt = 0L
 

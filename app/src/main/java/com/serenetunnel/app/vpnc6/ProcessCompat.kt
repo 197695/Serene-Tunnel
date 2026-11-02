@@ -22,7 +22,7 @@ internal object ProcessCompat {
                             }
                         }
                     },
-                    "BarkaNativeLog"
+                    "SereneNativeLog"
                 ).apply {
                     isDaemon = true
                     start()

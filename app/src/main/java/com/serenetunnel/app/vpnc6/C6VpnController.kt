@@ -26,13 +26,13 @@ class C6VpnController(context: Context) {
 
         val requestId = UUID.randomUUID().toString()
         val future = C6VpnRuntime.register(requestId)
-        val intent = Intent(appContext, BarkaVpnService::class.java).apply {
-            action = BarkaVpnService.ACTION_CONNECT
-            putExtra(BarkaVpnService.EXTRA_REQUEST_ID, requestId)
-            putExtra(BarkaVpnService.EXTRA_PROFILE_ID, profile.networkId)
-            putExtra(BarkaVpnService.EXTRA_PROFILE_NAME, profile.displayName)
-            putExtra(BarkaVpnService.EXTRA_PROTOCOL, profile.protocol.name)
-            putExtra(BarkaVpnService.EXTRA_CONFIG_JSON, profile.configJson)
+        val intent = Intent(appContext, SereneVpnService::class.java).apply {
+            action = SereneVpnService.ACTION_CONNECT
+            putExtra(SereneVpnService.EXTRA_REQUEST_ID, requestId)
+            putExtra(SereneVpnService.EXTRA_PROFILE_ID, profile.networkId)
+            putExtra(SereneVpnService.EXTRA_PROFILE_NAME, profile.displayName)
+            putExtra(SereneVpnService.EXTRA_PROTOCOL, profile.protocol.name)
+            putExtra(SereneVpnService.EXTRA_CONFIG_JSON, profile.configJson)
         }
 
         return try {
@@ -60,9 +60,9 @@ class C6VpnController(context: Context) {
     fun disconnect(): C6VpnResult {
         val requestId = UUID.randomUUID().toString()
         val future = C6VpnRuntime.register(requestId)
-        val intent = Intent(appContext, BarkaVpnService::class.java).apply {
-            action = BarkaVpnService.ACTION_DISCONNECT
-            putExtra(BarkaVpnService.EXTRA_REQUEST_ID, requestId)
+        val intent = Intent(appContext, SereneVpnService::class.java).apply {
+            action = SereneVpnService.ACTION_DISCONNECT
+            putExtra(SereneVpnService.EXTRA_REQUEST_ID, requestId)
         }
 
         return try {
@@ -79,8 +79,8 @@ class C6VpnController(context: Context) {
     private fun stopWithoutWaiting() {
         runCatching {
             appContext.startService(
-                Intent(appContext, BarkaVpnService::class.java).apply {
-                    action = BarkaVpnService.ACTION_DISCONNECT
+                Intent(appContext, SereneVpnService::class.java).apply {
+                    action = SereneVpnService.ACTION_DISCONNECT
                 }
             )
         }
