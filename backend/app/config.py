@@ -22,10 +22,6 @@ class Settings:
     database_path: str = _env("DATABASE_PATH", "/app/data/serene.db")
     code_secret: str = _env("CODE_SECRET", "CHANGE_ME")
     admin_token: str = _env("ADMIN_TOKEN", "CHANGE_ME")
-    saspay_secret_key: str = _env("SASPAY_SECRET_KEY")
-    saspay_webhook_secret: str = _env("SASPAY_WEBHOOK_SECRET")
-    saspay_api_base: str = _env("SASPAY_API_BASE", "https://api.saspay.me/api/v1").rstrip("/")
-    saspay_country: str = _env("SASPAY_COUNTRY", "BF").upper()
     cors_origins: str = _env("CORS_ORIGINS")
 
     def validate_runtime(self) -> None:
@@ -33,12 +29,7 @@ class Settings:
 
     @property
     def payment_ready(self) -> bool:
-        return (
-            bool(self.saspay_secret_key)
-            and bool(self.saspay_webhook_secret)
-            and self.public_base_url.startswith("https://")
-            and "example.com" not in self.public_base_url
-        )
+        return False
 
 
 settings = Settings()
