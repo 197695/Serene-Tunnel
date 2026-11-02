@@ -7,7 +7,7 @@ import android.os.*
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.serenetunnel.app.R
-import com.serenetunnel.app.ipfinder.assistant.BarkaAssistantService
+import com.serenetunnel.app.ipfinder.assistant.SereneAssistantService
 import com.serenetunnel.app.networkinfo.NetworkIpProvider
 import com.serenetunnel.app.journal.AppLogStore
 
@@ -35,7 +35,7 @@ class IpSearchService : Service() {
     private val completed = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (!active) return
-            if (intent?.getBooleanExtra(BarkaAssistantService.EXTRA_CYCLE_SUCCEEDED, false) == true) {
+            if (intent?.getBooleanExtra(SereneAssistantService.EXTRA_CYCLE_SUCCEEDED, false) == true) {
                 waiting = true; failures = 0; inspectIp()
                 handler.postDelayed({ if (active && waiting) nextCycle() }, 30_000)
             } else if (++failures >= 2) finishSearch(getString(R.string.ip_finder_cycle_failed))
@@ -55,7 +55,7 @@ class IpSearchService : Service() {
                     android.media.AudioAttributes.Builder().setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION).build())
             })
         }
-        ContextCompat.registerReceiver(this, completed, IntentFilter(BarkaAssistantService.ACTION_CYCLE_COMPLETED), ContextCompat.RECEIVER_NOT_EXPORTED)
+        ContextCompat.registerReceiver(this, completed, IntentFilter(SereneAssistantService.ACTION_CYCLE_COMPLETED), ContextCompat.RECEIVER_NOT_EXPORTED)
         registered = true
         cm.registerNetworkCallback(NetworkRequest.Builder().addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR).build(), callback)
     }
@@ -83,8 +83,8 @@ class IpSearchService : Service() {
     }
     private fun requestCycle() {
         if (!active) return
-        if (BarkaAssistantService.requestAirplaneCycle(this)) return
-        if (!BarkaAssistantService.isSelected(this) || ++readyRetries >= 10) finishSearch(getString(R.string.ip_finder_cycle_failed))
+        if (SereneAssistantService.requestAirplaneCycle(this)) return
+        if (!SereneAssistantService.isSelected(this) || ++readyRetries >= 10) finishSearch(getString(R.string.ip_finder_cycle_failed))
         else handler.postDelayed({ requestCycle() }, 1000)
     }
     private fun inspectIp() {
@@ -168,7 +168,7 @@ class IpSearchService : Service() {
     }
     private fun finishSearch(message: String, alertDurationMs: Long = 0L) {
         active = false; handler.removeCallbacksAndMessages(null)
-        BarkaAssistantService.cancelAirplaneCycle(this)
+        SereneAssistantService.cancelAirplaneCycle(this)
         publish(message)
         if (alertDurationMs > 0L) handler.postDelayed(stopAfterAlert, alertDurationMs)
         else stopSearchService()
@@ -180,7 +180,7 @@ class IpSearchService : Service() {
     override fun onDestroy() {
         val interrupted = active
         active = false; handler.removeCallbacksAndMessages(null)
-        BarkaAssistantService.cancelAirplaneCycle(this)
+        SereneAssistantService.cancelAirplaneCycle(this)
         if (interrupted) publish(getString(R.string.ip_finder_stopped))
         if (registered) unregisterReceiver(completed)
         runCatching { cm.unregisterNetworkCallback(callback) }

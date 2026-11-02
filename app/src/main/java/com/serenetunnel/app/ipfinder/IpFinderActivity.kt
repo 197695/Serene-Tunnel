@@ -26,11 +26,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.serenetunnel.app.R
-import com.serenetunnel.app.ipfinder.assistant.BarkaAssistantService
+import com.serenetunnel.app.ipfinder.assistant.SereneAssistantService
 import com.serenetunnel.app.journal.AppLogStore
 import com.serenetunnel.app.networkinfo.NetworkIpProvider
 import com.serenetunnel.app.ui.SystemBars
-import com.serenetunnel.app.vpnc6.BarkaVpnService
+import com.serenetunnel.app.vpnc6.SereneVpnService
 import com.google.android.material.button.MaterialButton
 import java.net.Inet4Address
 
@@ -131,7 +131,7 @@ class IpFinderActivity : AppCompatActivity() {
         stopButton.setOnClickListener {
             stopSearch(
                 getString(R.string.ip_finder_stopped),
-                R.color.barka_text_secondary
+                R.color.serene_text_secondary
             )
         }
 
@@ -139,7 +139,7 @@ class IpFinderActivity : AppCompatActivity() {
             if (searching) {
                 stopSearch(
                     getString(R.string.ip_finder_stopped),
-                    R.color.barka_text_secondary
+                    R.color.serene_text_secondary
                 )
             } else {
                 startSearch()
@@ -258,7 +258,7 @@ class IpFinderActivity : AppCompatActivity() {
     private fun refreshAssistantState() {
         if (!::setAssistantButton.isInitialized) return
         setAssistantButton.setText(
-            if (BarkaAssistantService.isSelected(this)) {
+            if (SereneAssistantService.isSelected(this)) {
                 R.string.ip_finder_assistant_selected
             } else {
                 R.string.ip_finder_set_assistant
@@ -279,7 +279,7 @@ class IpFinderActivity : AppCompatActivity() {
         wifiWarning.setTextColor(
             ContextCompat.getColor(
                 this,
-                if (wifiActive) R.color.barka_red else R.color.barka_green
+                if (wifiActive) R.color.serene_red else R.color.serene_green
             )
         )
 
@@ -291,9 +291,9 @@ class IpFinderActivity : AppCompatActivity() {
         val compatible = currentIp != null && matchesSearchPattern(currentIp)
         resultText.text = currentIp ?: "—"
         resultText.setTextColor(ContextCompat.getColor(this, when {
-            currentIp == null -> R.color.barka_text_secondary
-            compatible -> R.color.barka_green
-            else -> R.color.barka_red
+            currentIp == null -> R.color.serene_text_secondary
+            compatible -> R.color.serene_green
+            else -> R.color.serene_red
         }))
         scanButton.visibility = if (compatible) View.GONE else View.VISIBLE
         if (compatible) manualAirplaneButton.visibility = View.GONE
@@ -308,9 +308,9 @@ class IpFinderActivity : AppCompatActivity() {
             else -> getString(R.string.ip_finder_idle)
         }
         statusText.setTextColor(ContextCompat.getColor(this, when {
-            searching -> R.color.barka_orange
-            foundStillCurrent -> R.color.barka_green
-            else -> R.color.barka_text_secondary
+            searching -> R.color.serene_orange
+            foundStillCurrent -> R.color.serene_green
+            else -> R.color.serene_text_secondary
         }))
         if (!searching) progressText.setText(R.string.ip_finder_current_ip)
     }
@@ -328,7 +328,7 @@ class IpFinderActivity : AppCompatActivity() {
             return
         }
 
-        if (!BarkaAssistantService.isSelected(this)) {
+        if (!SereneAssistantService.isSelected(this)) {
             Toast.makeText(
                 this,
                 R.string.ip_finder_select_assistant,
@@ -465,16 +465,16 @@ class IpFinderActivity : AppCompatActivity() {
 
     private fun disconnectActiveTunnel() {
         if (
-            BarkaVpnService.connectionSnapshot().state ==
-            BarkaVpnService.RuntimeConnectionState.DISCONNECTED
+            SereneVpnService.connectionSnapshot().state ==
+            SereneVpnService.RuntimeConnectionState.DISCONNECTED
         ) {
             return
         }
         runCatching {
             ContextCompat.startForegroundService(
                 this,
-                Intent(this, BarkaVpnService::class.java).apply {
-                    action = BarkaVpnService.ACTION_DISCONNECT
+                Intent(this, SereneVpnService::class.java).apply {
+                    action = SereneVpnService.ACTION_DISCONNECT
                 }
             )
         }
@@ -518,7 +518,7 @@ class IpFinderActivity : AppCompatActivity() {
             }
         }
 
-        const val PREFERENCES_NAME = "barka_ipfinder"
+        const val PREFERENCES_NAME = "serene_ipfinder"
         private const val KEY_SEARCH_PATTERN = "search_pattern"
         const val KEY_LAST_FOUND_IP = "last_found_ip"
         private const val DEFAULT_SEARCH_PATTERN = OrangeIpPolicy.PATTERNS
@@ -535,7 +535,7 @@ class IpFinderActivity : AppCompatActivity() {
         private const val NEXT_CYCLE_DELAY_MS = 900L
 
         private fun usesOrangeRules(context: Context): Boolean =
-            context.getSharedPreferences("barka_home_preferences", Context.MODE_PRIVATE)
+            context.getSharedPreferences("serene_home_preferences", Context.MODE_PRIVATE)
                 .getString("selected_network_id", null) == "orange_bf"
 
         private fun loadSearchPattern(context: Context): String {
