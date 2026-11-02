@@ -11,9 +11,9 @@ import com.serenetunnel.app.trial.TrialStartRequest
 import com.serenetunnel.app.trial.TrialStatus
 import org.json.JSONObject
 
-class RealBarkaApi(
+class RealSereneApi(
     private val client: HttpJsonClient
-) : BarkaApi {
+) : SereneApi {
 
     override fun checkAccess(
         request: AccessCheckRequest
