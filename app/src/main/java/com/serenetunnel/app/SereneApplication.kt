@@ -23,7 +23,7 @@ class SereneApplication : Application() {
         if (currentProcessName()?.endsWith(":tun2socks") == true) return
 
         // One migration for this release; later user choices remain untouched.
-        val settings = getSharedPreferences("𝚂𝙴𝚁𝙴𝙽𝙴_settings", MODE_PRIVATE)
+        val settings = getSharedPreferences("serene_settings", MODE_PRIVATE)
         if (!settings.getBoolean("auto_ping_default_105", false)) {
             settings.edit().putBoolean("auto_ping", true)
                 .putBoolean("auto_ping_default_105", true).commit()
@@ -49,7 +49,7 @@ class SereneApplication : Application() {
     }
 
     private fun applySavedLanguage() {
-        val language = getSharedPreferences("𝚂𝙴𝚁𝙴𝙽𝙴_settings", MODE_PRIVATE)
+        val language = getSharedPreferences("serene_settings", MODE_PRIVATE)
             .getString("language", "fr")
             .takeUnless { it.isNullOrBlank() }
             ?: "fr"
@@ -59,7 +59,7 @@ class SereneApplication : Application() {
     }
 
     private fun applySavedTheme() {
-        val theme = getSharedPreferences("𝚂𝙴𝚁𝙴𝙽𝙴_settings", MODE_PRIVATE)
+        val theme = getSharedPreferences("serene_settings", MODE_PRIVATE)
             .getString("theme", "light")
             ?: "light"
 
