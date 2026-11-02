@@ -29,7 +29,7 @@ object HomeNetworkIpOverlay {
 
         val title = TextView(activity).apply {
             setText(R.string.network_ip_title)
-            setTextColor(activity.getColor(R.color.barka_blue))
+            setTextColor(activity.getColor(R.color.serene_blue))
             textSize = 12f
             setTypeface(typeface, Typeface.BOLD)
             gravity = Gravity.CENTER
@@ -38,7 +38,7 @@ object HomeNetworkIpOverlay {
         val value = TextView(activity).apply {
             id = R.id.networkIpValue
             textSize = 17f
-            setTextColor(activity.getColor(R.color.barka_text))
+            setTextColor(activity.getColor(R.color.serene_text))
             setTypeface(typeface, Typeface.BOLD)
             gravity = Gravity.CENTER
         }
